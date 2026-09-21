@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - SriMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/checkout.css">
+    <link rel="stylesheet" href="../css/payment.css">
+    <link rel="stylesheet" href="../css/map.css">
+
+    <meta name="description" content="SriMart - Your one-stop shop for everything. Fast delivery and best prices.">
+    <meta property="og:title" content="SriMart E-commerce">
+    <meta property="og:description" content="Shop the latest trends at SriMart.">
+    <meta property="og:type" content="website">
+    <link rel="manifest" href="../manifest.json">
+
+</head>
+<body>
+
+    <!-- Minimal Header for Checkout -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="../index.html" class="logo">
+                <i class="fas fa-shopping-bag logo-icon"></i>
+                <span class="logo-text"><b>Sri</b>Mart</span>
+            </a>
+            <div style="font-weight: 500; font-size: 1.25rem;">Secure Checkout</div>
+            <div>
+                <i class="fas fa-lock" style="color: var(--secondary-color); font-size: 1.5rem;"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="container checkout-container">
+        
+        <!-- Left: Steps -->
+        <div class="checkout-steps">
+            
+            <!-- Step 1: Delivery Address -->
+            <div class="step-card active" id="step-delivery">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div>DELIVERY ADDRESS</div>
+                </div>
+                <div class="step-content" id="content-delivery">
+                    
+                    <div id="saved-addresses-container" class="hidden" style="margin-bottom: 25px;">
+                        <h4 style="margin-bottom: 10px;">Select a Saved Address</h4>
+                        <div id="saved-addresses-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;"></div>
+                        <div style="text-align: center; margin-bottom: 15px; color: var(--text-secondary);">OR Add a New Address Below</div>
+                    </div>
+
+                    <form id="delivery-form">
+                        <div class="checkout-form-grid">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" placeholder="Full Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="10-digit mobile number">
+                            </div>
+                            <div class="form-group">
+                                <label for="pincode">Pincode</label>
+                                <input type="text" id="pincode" placeholder="Pincode">
+                            </div>
+                            <div class="form-group">
+                                <label for="locality">Locality</label>
+                                <input type="text" id="locality" placeholder="Locality">
+                            </div>
+                            <!-- Map Container -->
+                            <div class="form-group full-width" style="margin-bottom: 20px;">
+                                <label>Delivery Location (Pin on Map)</label>
+                                <div id="checkout-map" class="map-container"></div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">Drag the pin to set your exact location.</div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="address">Address (Area and Street)</label>
+                                <input type="text" id="address" placeholder="Address">
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City/District/Town</label>
+                                <input type="text" id="city" placeholder="City">
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" id="state" placeholder="State">
+                            </div>
+                        </div>
+                        <div class="shipping-options-section" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                            <h4 style="margin-bottom: 12px; font-weight:600; font-size: 0.95rem;">Choose Shipping Speed</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                                <label style="border: 2px solid var(--primary-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: rgba(0,0,0,0.01);" class="shipping-card active" id="shipping-std-label">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem;">
+                                        <span>Standard</span>
+                                        <input type="radio" name="shipping_speed" value="standard" checked style="accent-color: var(--primary-color);">
+                                    </div>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">3-5 Business Days</span>
+                                    <span style="font-weight: 600; font-size: 0.85rem; color: var(--success-color);">Free</span>
+                                </label>
+                                <label style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 5px; cursor: pointer;" class="shipping-card" id="shipping-exp-label">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem;">
+                                        <span>Express</span>
+                                        <input type="radio" name="shipping_speed" value="express" style="accent-color: var(--primary-color);">
+                                    </div>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">1-2 Business Days</span>
+                                    <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">₹99</span>
+                                </label>
+                                <label style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 5px; cursor: pointer;" class="shipping-card" id="shipping-same-label">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem;">
+                                        <span>Same Day</span>
+                                        <input type="radio" name="shipping_speed" value="sameday" style="accent-color: var(--primary-color);">
+                                    </div>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">Delivery Today</span>
+                                    <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">₹199</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top: 15px; padding: 12px 24px;">Deliver Here</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Step 2: Payment -->
+            <div class="step-card" id="step-payment">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div>PAYMENT OPTIONS</div>
+                </div>
+                <div class="step-content" id="content-payment">
+                    <form id="payment-form">
+                        <div class="payment-options">
+                            
+                            <label class="payment-option">
+                                <div><input type="radio" name="payment_method" value="card"> Credit / Debit / ATM Card</div>
+                                <div class="payment-details" id="details-card">
+                                    <div class="payment-icons">
+                                        <i class="fab fa-cc-visa"></i>
+                                        <i class="fab fa-cc-mastercard"></i>
+                                        <i class="fab fa-cc-amex"></i>
+                                    </div>
+                                    <input type="text" id="card-number" placeholder="Card Number (e.g. 4111 1111 1111 1111)" maxlength="19">
+                                    <div style="display: flex; gap: 10px;">
+                                        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" style="flex:1;">
+                                        <input type="password" id="card-cvv" placeholder="CVV" maxlength="3" style="flex:1;">
+                                    </div>
+                                    <input type="text" id="card-name" placeholder="Name on Card">
+                                    <label style="margin-top: 10px; display: block; font-size: 0.9rem; font-weight: 500; cursor: pointer;">
+                                        <input type="checkbox" id="save-card-checkbox"> Save this card for future payments
+                                    </label>
+                                    <div id="saved-card-container" class="hidden" style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 4px; border: 1px solid #cce5ff;">
+                                        <div style="font-weight: 600;">Saved Card: <span id="saved-card-mask"></span></div>
+                                        <button type="button" id="use-saved-card-btn" class="btn-secondary" style="margin-top: 5px; padding: 5px 10px; font-size: 0.8rem;">Use this card</button>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <div><input type="radio" name="payment_method" value="upi"> UPI</div>
+                                <div class="payment-details" id="details-upi">
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 12px; margin-top: 10px;">
+                                        <label style="border:1px solid var(--border-color); border-radius:8px; padding:10px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; background:#fff;" class="upi-app-card">
+                                            <input type="radio" name="upi_app" value="gpay" checked style="margin-bottom:5px; accent-color:var(--primary-color);">
+                                            <i class="fab fa-google-pay" style="font-size:1.5rem; color:#4285F4;"></i>
+                                            <span style="font-size:0.75rem; font-weight:600; color: #333;">GPay</span>
+                                        </label>
+                                        <label style="border:1px solid var(--border-color); border-radius:8px; padding:10px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; background:#fff;" class="upi-app-card">
+                                            <input type="radio" name="upi_app" value="phonepe" style="margin-bottom:5px; accent-color:var(--primary-color);">
+                                            <i class="fas fa-mobile-alt" style="font-size:1.2rem; color:#5f259f; margin-bottom: 4px;"></i>
+                                            <span style="font-size:0.75rem; font-weight:600; color: #333;">PhonePe</span>
+                                        </label>
+                                        <label style="border:1px solid var(--border-color); border-radius:8px; padding:10px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; background:#fff;" class="upi-app-card">
+                                            <input type="radio" name="upi_app" value="paytm" style="margin-bottom:5px; accent-color:var(--primary-color);">
+                                            <i class="fas fa-wallet" style="font-size:1.2rem; color:#00baf2; margin-bottom: 4px;"></i>
+                                            <span style="font-size:0.75rem; font-weight:600; color: #333;">Paytm</span>
+                                        </label>
+                                        <label style="border:1px solid var(--border-color); border-radius:8px; padding:10px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; background:#fff;" class="upi-app-card">
+                                            <input type="radio" name="upi_app" value="bhim" style="margin-bottom:5px; accent-color:var(--primary-color);">
+                                            <i class="fas fa-university" style="font-size:1.2rem; color:#e15b27; margin-bottom: 4px;"></i>
+                                            <span style="font-size:0.75rem; font-weight:600; color: #333;">BHIM</span>
+                                        </label>
+                                    </div>
+                                    <input type="text" id="upi-id" placeholder="Enter UPI ID (e.g. name@bank)">
+                                    <div id="upi-spinner" class="spinner hidden">Waiting for approval... <i class="fas fa-circle-notch fa-spin"></i></div>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <div><input type="radio" name="payment_method" value="netbanking"> Net Banking</div>
+                                <div class="payment-details" id="details-netbanking">
+                                    <select id="bank-select">
+                                        <option value="">Select Bank</option>
+                                        <option value="sbi">State Bank of India</option>
+                                        <option value="hdfc">HDFC Bank</option>
+                                        <option value="icici">ICICI Bank</option>
+                                        <option value="axis">Axis Bank</option>
+                                    </select>
+                                    <div id="bank-redirect-msg" class="hidden" style="margin-top:10px; color:var(--primary-color);">Redirecting to bank portal...</div>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-option">
+                                <div><input type="radio" name="payment_method" value="wallet"> Wallet</div>
+                                <div class="payment-details" id="details-wallet">
+                                    <div>Available Balance: <strong id="wallet-balance-display">₹0</strong></div>
+                                    <div id="wallet-error" style="color:var(--danger-color); font-size:0.85rem; margin-top:5px;" class="hidden">Insufficient balance.</div>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <div><input type="radio" name="payment_method" value="emi"> Simulated Interest-Free EMI</div>
+                                <div class="payment-details" id="details-emi">
+                                    <div style="font-weight:600; margin-bottom:10px; font-size:0.85rem;">Select EMI Tenure (Interest-Free)</div>
+                                    <div id="emi-plans-container" style="display:flex; flex-direction:column; gap:10px; padding: 5px 0;">
+                                        <!-- EMI plans will be injected here in checkout.js -->
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <div><input type="radio" name="payment_method" value="cod"> Cash on Delivery</div>
+                                <div class="payment-details" id="details-cod">Pay by cash or UPI when the order is delivered.</div>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top: 20px; padding: 12px 24px;">Continue to Review</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Step 3: Order Review -->
+            <div class="step-card" id="step-review">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div>ORDER SUMMARY</div>
+                </div>
+                <div class="step-content" id="content-review">
+                    <div id="review-items">
+                        <!-- Items injected via JS -->
+                    </div>
+                    <div id="review-order-breakdown" style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">Order Summary</h4>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Subtotal:</span> <span id="review-subtotal">₹0</span></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Discount:</span> <span id="review-discount" style="color: var(--success-color);">-₹0</span></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Delivery Fee:</span> <span id="review-delivery">Free</span></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Tax (18% GST):</span> <span id="review-tax">₹0</span></div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 1.1rem;"><span>Grand Total:</span> <span id="review-grand-total">₹0</span></div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button id="place-order-btn" class="btn-primary" style="padding: 12px 30px; font-size: 1.1rem;">Place Order</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Right: Summary -->
+        <div class="checkout-summary">
+            <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px; color: var(--text-secondary); font-size: 0.9rem;">PRICE DETAILS</h3>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span id="checkout-items-count">Price (0 items)</span>
+                <span id="checkout-original">₹0</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span>Discount</span>
+                <span id="checkout-discount" style="color: var(--success-color);">- ₹0</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span>Delivery Charges</span>
+                <span id="checkout-delivery" style="color: var(--success-color);">Free</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 15px; margin-top: 15px; font-size: 1.25rem; font-weight: 700;">
+                <span>Total Payable</span>
+                <span id="checkout-total">₹0</span>
+            </div>
+            
+            <div style="margin-top: 20px; font-size: 0.85rem; color: var(--text-secondary);">
+                By placing this order, you agree to SriMart's Terms of Use and Privacy Policy.
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Success Overlay -->
+    <div class="order-success-overlay hidden" id="order-success-overlay">
+        <div class="success-card">
+            <div class="check-animation">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Your Order ID is: <strong id="success-order-id">#000000</strong></p>
+            <p>Estimated Delivery: <strong id="success-delivery-date">Tomorrow</strong></p>
+            <button class="btn-primary" onclick="window.location.href='orders.html'" style="margin-top: 20px;">Track Order</button>
+        </div>
+    </div>
+
+    <!-- Fixed Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav mobile-only" id="mobile-bottom-navbar" aria-label="Mobile Bottom Navigation">
+        <a href="../index.html" class="mobile-bottom-item" id="btn-bottom-home">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-home"></i>
+            </div>
+            <span>Home</span>
+        </a>
+        <a href="categories.html" class="mobile-bottom-item" id="btn-bottom-categories">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-th-large"></i>
+            </div>
+            <span>Categories</span>
+        </a>
+        <a href="profile.html" class="mobile-bottom-item" id="btn-bottom-profile">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-user"></i>
+            </div>
+            <span>Account</span>
+        </a>
+        <a href="cart.html" class="mobile-bottom-item active" id="btn-bottom-cart">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="bottom-badge" id="bottom-cart-badge" style="display: none;">0</span>
+            </div>
+            <span>Cart</span>
+        </a>
+    </nav>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="../js/data.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/state.js"></script>
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/core/recommendations.js"></script>
+    <script src="../js/core/calculations.js"></script>
+    <script src="../js/core/filters.js"></script>
+    <script src="../js/components/productCard.js"></script>
+    <script src="../js/features/chat.js"></script>
+    <script src="../js/features/theme.js"></script>
+    <script src="../js/features/navbar.js"></script>
+    <script src="../js/features/formValidation.js"></script>
+    <script src="../js/features/auth.js"></script>
+    <script src="../js/features/checkout.js"></script>
+</body>
+</html>

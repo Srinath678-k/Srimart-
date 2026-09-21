@@ -1,0 +1,55 @@
+/* ==========================================================================
+   SriMart Map Styles (Leaflet)
+   ========================================================================== */
+
+.map-container {
+    height: 300px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color); /* fallback */
+    z-index: 1; /* Keep Leaflet behind modals */
+}
+
+/* Store Locator specific */
+.store-locator-container {
+    padding: 40px 20px;
+    min-height: calc(100vh - 140px); /* header + footer approx */
+}
+
+.store-locator-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#store-locator-map {
+    height: 500px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    z-index: 1;
+}
+
+/* Custom Popup Styles */
+.leaflet-popup-content-wrapper {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+}
+
+.leaflet-popup-tip {
+    background: var(--surface-color);
+}
+
+.store-popup h3 {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+.store-popup p {
+    margin: 3px 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}

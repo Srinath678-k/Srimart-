@@ -1,0 +1,103 @@
+/* ==========================================================================
+   SriMart Payment Simulation Styles
+   ========================================================================== */
+
+.payment-details {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.payment-option input[type="radio"]:checked ~ .payment-details {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.payment-details input[type="text"],
+.payment-details input[type="password"],
+.payment-details select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-family: inherit;
+}
+
+.payment-details input:focus,
+.payment-details select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.payment-icons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.spinner {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Success Overlay */
+.order-success-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.success-card {
+    background: var(--surface-color);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.check-animation {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    animation: popIn 0.5s 0.2s both cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-card h2 {
+    margin-bottom: 15px;
+}
+.success-card p {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); }
+    80% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}

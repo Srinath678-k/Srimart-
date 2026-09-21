@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Policy - SriMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    
+    <meta name="description" content="Shipping Policy - SriMart E-commerce.">
+    <style>
+        .static-page-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #eee);
+            border-radius: 8px;
+            line-height: 1.8;
+            color: var(--text-primary, #333);
+        }
+        .static-page-container h1 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: var(--primary-color, #4CAF50);
+            border-bottom: 2px solid var(--border-color, #eee);
+            padding-bottom: 10px;
+        }
+        .static-page-container h2 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--text-primary, #111);
+        }
+        .static-page-container p {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: var(--text-secondary, #666);
+        }
+        .static-page-container ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        .static-page-container li {
+            margin-bottom: 8px;
+            color: var(--text-secondary, #666);
+        }
+        .static-page-container a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .static-page-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <button class="hamburger-menu" id="hamburger-menu" aria-label="Menu"><i class="fas fa-bars"></i></button>
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-shopping-bag logo-icon"></i>
+                    <span class="logo-text"><b>Sri</b>Mart</span>
+                </a>
+            </div>
+            <div class="search-container">
+                <form class="search-form" id="search-form">
+                    <input type="text" id="search-input" placeholder="Search for products, brands and more" autocomplete="off">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+                <div class="search-suggestions" id="search-suggestions"></div>
+            </div>
+            <nav class="nav-links" id="nav-links">
+                <button class="close-menu" id="close-menu"><i class="fas fa-times"></i></button>
+                <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+                <a href="wishlist.html" class="nav-item"><i class="fas fa-heart"></i><span>Wishlist</span></a>
+                <a href="cart.html" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i><span>Cart</span>
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </a>
+                <div class="theme-switch" id="theme-toggle" aria-label="Toggle Theme"><i class="fas fa-moon theme-switch-icon"></i><i class="fas fa-sun theme-switch-icon"></i></div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="static-page-container">
+            <h1>Shipping Policy</h1>
+            <p>SriMart is committed to delivery excellence. We offer multiple shipping options to fit your needs.</p>
+            <h2>Shipping Speeds</h2>
+            <ul>
+                <li><strong>Standard Delivery (3-5 Days):</strong> Free for orders over ₹500, flat ₹50 otherwise.</li>
+                <li><strong>Express Shipping (1-2 Days):</strong> Flat ₹99. Priority processing.</li>
+                <li><strong>Same Day Delivery:</strong> Flat ₹199 (Available in select metro areas for orders placed before 12 PM).</li>
+            </ul>
+            <h2>Delivery Estimate</h2>
+            <p>Delivery timelines are computed dynamically on product pages. High-stock items (>30 in inventory) are eligible for next-day dispatch.</p>
+        </div>
+    </main>
+
+        <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <a href="../index.html" class="logo" style="margin-bottom: 20px; display: inline-block; text-decoration:none;">
+                    <i class="fas fa-shopping-bag logo-icon" style="color:var(--secondary-color);"></i>
+                    <span class="logo-text" style="color:var(--text-light);"><b>Sri</b>Mart</span>
+                </a>
+                <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">
+                    Your one-stop destination for everything you need. Shop smart, shop SriMart.
+                </p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="store-locator.html">Store Locator</a></li>
+                    <li><a href="profile.html#orders">Track Order</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="refund.html">Returns & Refund</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col newsletter-col">
+                <h3>Stay in the Loop</h3>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px;">Subscribe to our newsletter to get updates on our latest offers!</p>
+                <form class="newsletter-form" id="newsletter-form" style="display:flex; gap:5px;">
+                    <input type="email" id="newsletter-email" placeholder="Enter your email" required style="padding:10px; flex:1; border:none; border-radius:4px; font-family: inherit;">
+                    <button type="submit" class="btn-primary" style="padding: 10px 15px; border-radius:4px; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+                </form>
+                <div class="payment-methods" style="margin-top: 20px;">
+                    <p style="font-size: 0.85rem; margin-bottom: 5px; color:var(--text-light);">100% Secure Payments</p>
+                    <i class="fab fa-cc-visa" style="font-size: 1.5rem; margin-right: 5px; color:#fff;"></i>
+                    <i class="fab fa-cc-mastercard" style="font-size: 1.5rem; margin-right: 5px; color:#fff;"></i>
+                    <i class="fab fa-cc-paypal" style="font-size: 1.5rem; margin-right: 5px; color:#fff;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; margin-top:30px; text-align:center;">
+            <p>&copy; 2026 SriMart. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Fixed Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav mobile-only" id="mobile-bottom-navbar" aria-label="Mobile Bottom Navigation">
+        <a href="../index.html" class="mobile-bottom-item" id="btn-bottom-home">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-home"></i>
+            </div>
+            <span>Home</span>
+        </a>
+        <a href="categories.html" class="mobile-bottom-item" id="btn-bottom-categories">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-th-large"></i>
+            </div>
+            <span>Categories</span>
+        </a>
+        <a href="profile.html" class="mobile-bottom-item" id="btn-bottom-profile">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-user"></i>
+            </div>
+            <span>Account</span>
+        </a>
+        <a href="cart.html" class="mobile-bottom-item" id="btn-bottom-cart">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="bottom-badge" id="bottom-cart-badge" style="display: none;">0</span>
+            </div>
+            <span>Cart</span>
+        </a>
+    </nav>
+
+    <!-- JS Files -->
+    <script src="../js/data.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/state.js"></script>
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/core/recommendations.js"></script>
+    <script src="../js/core/calculations.js"></script>
+    <script src="../js/core/filters.js"></script>
+    <script src="../js/components/productCard.js"></script>
+    <script src="../js/features/chat.js"></script>
+    <script src="../js/features/theme.js"></script>
+    <script src="../js/features/navbar.js"></script>
+</body>
+</html>

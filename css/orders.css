@@ -1,0 +1,226 @@
+/* ==========================================================================
+   SriMart Orders & Profile Styles
+   ========================================================================== */
+
+.account-container {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl) 0;
+    align-items: flex-start;
+}
+
+/* --- Sidebar --- */
+.account-sidebar {
+    width: 250px;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.user-info-brief {
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.account-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.account-nav-item {
+    padding: 15px var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.account-nav-item:last-child {
+    border-bottom: none;
+}
+
+.account-nav-item:hover, .account-nav-item.active {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.account-nav-item i {
+    width: 20px;
+    color: var(--primary-color);
+}
+
+/* --- Main Content Area --- */
+.account-main {
+    flex: 1;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-lg);
+    min-height: 500px;
+}
+
+.account-header {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* --- Orders List --- */
+.order-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: var(--spacing-md);
+    overflow: hidden;
+}
+
+.order-header {
+    background-color: var(--bg-color);
+    padding: var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-id {
+    font-weight: 600;
+}
+
+.order-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.order-total {
+    font-weight: 600;
+}
+
+.order-status {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-processing { background-color: #fff3cd; color: #856404; }
+.status-delivered { background-color: #d4edda; color: #155724; }
+[data-theme="dark"] .status-processing { background-color: #856404; color: #fff3cd; }
+[data-theme="dark"] .status-delivered { background-color: #155724; color: #d4edda; }
+
+.order-items {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-item {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.order-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-color);
+}
+
+.order-item-details {
+    flex: 1;
+}
+
+/* --- Profile Form --- */
+.profile-form {
+    max-width: 500px;
+}
+
+.profile-form .form-group {
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .account-container {
+        flex-direction: column;
+    }
+    .account-sidebar {
+        width: 100%;
+    }
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+/* --- Timeline --- */
+.order-timeline {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 30px;
+    position: relative;
+}
+.order-timeline::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    right: 20px;
+    height: 4px;
+    background: #e0e0e0;
+    z-index: 1;
+}
+.timeline-step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+}
+.timeline-node {
+    width: 24px;
+    height: 24px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    border: 3px solid var(--surface-color);
+}
+.timeline-node.completed {
+    background: var(--success-color);
+}
+.timeline-node.cancelled {
+    background: var(--error-color);
+}
+.timeline-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.status-cancelled {
+    color: var(--error-color);
+}
+

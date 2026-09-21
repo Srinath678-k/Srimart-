@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Center - SriMart</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css"> <!-- For Toast styles -->
+    <link rel="stylesheet" href="../css/responsive.css">
+    
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --sidebar-bg: #111827;
+            --sidebar-hover: #1f2937;
+            --sidebar-text: #9ca3af;
+            --sidebar-text-active: #ffffff;
+            --admin-primary: var(--primary-color, #0B6E4F);
+            --admin-secondary: var(--secondary-color, #FFB100);
+            --card-border-radius: 12px;
+        }
+
+        body {
+            background-color: var(--surface-color);
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Access Denied Overlay */
+        .access-denied-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-color);
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .access-denied-card {
+            background: var(--bg-card, #fff);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            max-width: 450px;
+            width: 100%;
+        }
+        .access-denied-icon {
+            font-size: 4rem;
+            color: var(--error-color, #dc3545);
+            margin-bottom: 20px;
+        }
+
+        /* Sidebar Styling */
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .sidebar-brand {
+            padding: 24px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #1f2937;
+        }
+        .sidebar-brand i {
+            color: var(--admin-secondary);
+        }
+        .sidebar-user {
+            padding: 15px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #1f2937;
+            background: rgba(255,255,255,0.02);
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--admin-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .user-info h5 {
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--sidebar-text-active);
+        }
+        .user-info span {
+            font-size: 0.75rem;
+            color: var(--sidebar-text);
+        }
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+            margin: 0;
+            flex: 1;
+        }
+        .menu-item {
+            padding: 2px 16px;
+            margin-bottom: 4px;
+        }
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .menu-link:hover {
+            background-color: var(--sidebar-hover);
+            color: var(--sidebar-text-active);
+        }
+        .menu-item.active .menu-link {
+            background-color: var(--admin-primary);
+            color: var(--sidebar-text-active);
+        }
+        .sidebar-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #1f2937;
+        }
+        .btn-exit-store {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            width: 100%;
+        }
+        .btn-exit-store:hover {
+            color: var(--sidebar-text-active);
+        }
+
+        /* Main Content Container */
+        .admin-main-container {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        .admin-header-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .admin-header-title h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Panel Common */
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Analytics Tab Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-border-radius);
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .stat-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+        .stat-info div {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .stat-icon.sales { background: rgba(11, 110, 79, 0.1); color: var(--admin-primary); }
+        .stat-icon.orders { background: rgba(255, 177, 0, 0.1); color: var(--admin-secondary); }
+        .stat-icon.reviews { background: rgba(46, 196, 182, 0.1); color: #2ec4b6; }
+        .stat-icon.coupons { background: rgba(231, 29, 54, 0.1); color: #e71d36; }
+
+        .analytics-visuals {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media(max-width: 992px) {
+            .analytics-visuals { grid-template-columns: 1fr; }
+        }
+        .visual-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .visual-card h3 {
+            margin: 0 0 20px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* SVG Bar Chart Styling */
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 220px;
+            padding-top: 20px;
+            border-bottom: 2px solid var(--border-color);
+            gap: 15px;
+        }
+        .chart-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 45px;
+            background: var(--admin-primary);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+        }
+        .chart-bar:hover {
+            opacity: 0.9;
+        }
+        .chart-bar-tooltip {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .chart-bar:hover .chart-bar-tooltip {
+            opacity: 1;
+        }
+        .chart-label {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        /* Table and List styling */
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: var(--bg-card);
+        }
+        table, th, td {
+            border: none;
+        }
+        th, td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background-color: var(--bg-hover);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        td {
+            font-size: 0.92rem;
+        }
+        tr:hover td {
+            background-color: rgba(0,0,0,0.01);
+        }
+        .product-img-cell {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        /* Form Layout */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+        }
+
+        /* Badges & Status */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge.status-processing { background: rgba(255, 177, 0, 0.1); color: var(--admin-secondary); }
+        .badge.status-delivered { background: rgba(11, 110, 79, 0.1); color: var(--admin-primary); }
+        .badge.status-cancelled { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+        .badge.status-general { background: var(--bg-hover); color: var(--text-secondary); }
+
+        /* Buttons styling */
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-sm:hover {
+            background-color: var(--bg-hover);
+        }
+        .btn-edit {
+            border-color: var(--admin-primary);
+            color: var(--admin-primary);
+        }
+        .btn-edit:hover {
+            background-color: rgba(11, 110, 79, 0.05);
+        }
+        .btn-delete {
+            border-color: var(--error-color, #dc3545);
+            color: var(--error-color, #dc3545);
+        }
+        .btn-delete:hover {
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+        .modal.hidden {
+            display: none;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--card-border-radius);
+            width: 480px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+        .modal-content h3 {
+            margin: 0 0 20px 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        /* Reviews moderation custom designs */
+        .review-moderation-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .review-product-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .review-content-detail h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .review-text-body {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        .review-rating-stars {
+            color: var(--admin-secondary);
+            font-size: 0.8rem;
+        }
+        
+        /* Coupons view layout */
+        .coupon-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        @media (max-width: 900px) {
+            .coupon-layout { grid-template-columns: 1fr; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Access Denied Screen (displayed if role-check fails) -->
+    <div id="access-denied" class="access-denied-container hidden">
+        <div class="access-denied-card">
+            <div class="access-denied-icon"><i class="fas fa-lock"></i></div>
+            <h2>Access Denied</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 25px; line-height: 1.6;">
+                You do not have administrative privileges to access the SriMart control center. Please log in with an administrator account.
+            </p>
+            <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="window.location.href='login.html'">Go to Login</button>
+            <a href="../index.html" style="display: block; margin-top: 15px; text-decoration: none; color: var(--admin-primary); font-weight: 500;">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Admin Panel Layout -->
+    <div id="admin-panel-wrapper" style="display: none; width: 100%;">
+        
+        <!-- Mobile Top Bar -->
+        <div class="admin-mobile-header">
+            <button id="admin-mobile-toggle" class="admin-mobile-menu-btn" aria-label="Toggle Navigation Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="admin-mobile-logo">
+                <i class="fas fa-shopping-bag"></i> <span>SriMart Admin</span>
+            </div>
+            <a href="../index.html" class="admin-mobile-exit-btn" title="Exit to SriMart Store">
+                <i class="fas fa-store"></i>
+            </a>
+        </div>
+        
+        <!-- Mobile Backdrop Overlay -->
+        <div class="admin-sidebar-backdrop" id="admin-sidebar-backdrop"></div>
+
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <button class="admin-sidebar-close" id="admin-sidebar-close" aria-label="Close Menu">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="sidebar-brand">
+                <i class="fas fa-shopping-bag"></i>
+                <span>SriMart Control Panel</span>
+            </div>
+            
+            <div class="sidebar-user">
+                <div class="user-avatar" id="user-avatar-text">A</div>
+                <div class="user-info">
+                    <h5 id="user-display-name">Admin User</h5>
+                    <span>General Administrator</span>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-tab="analytics">
+                    <span class="menu-link"><i class="fas fa-chart-pie"></i> Analytics Dashboard</span>
+                </li>
+                <li class="menu-item" data-tab="products">
+                    <span class="menu-link"><i class="fas fa-boxes"></i> Manage Products</span>
+                </li>
+                <li class="menu-item" data-tab="orders">
+                    <span class="menu-link"><i class="fas fa-shopping-basket"></i> Manage Orders</span>
+                </li>
+                <li class="menu-item" data-tab="reviews">
+                    <span class="menu-link"><i class="fas fa-star-half-alt"></i> Moderate Reviews</span>
+                </li>
+                <li class="menu-item" data-tab="coupons">
+                    <span class="menu-link"><i class="fas fa-ticket-alt"></i> Coupons Manager</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <a href="../index.html" class="btn-exit-store">
+                    <i class="fas fa-arrow-left"></i> Exit to SriMart
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="admin-main-container">
+            
+            <!-- Page Header Title (updates dynamically) -->
+            <div class="admin-header-title">
+                <h1 id="admin-workspace-title">Analytics Dashboard</h1>
+                <div id="panel-actions-container">
+                    <!-- Context action button loaded here -->
+                </div>
+            </div>
+
+            <!-- Tab 1: Analytics Panel -->
+            <section id="panel-analytics" class="tab-panel active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>Total Sales</h3>
+                            <div id="stat-sales">₹0</div>
+                        </div>
+                        <div class="stat-icon sales"><i class="fas fa-wallet"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>Total Orders</h3>
+                            <div id="stat-orders">0</div>
+                        </div>
+                        <div class="stat-icon orders"><i class="fas fa-shopping-cart"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>Approved Reviews</h3>
+                            <div id="stat-reviews">0</div>
+                        </div>
+                        <div class="stat-icon reviews"><i class="fas fa-comment-dots"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>Active Coupons</h3>
+                            <div id="stat-coupons">0</div>
+                        </div>
+                        <div class="stat-icon coupons"><i class="fas fa-tags"></i></div>
+                    </div>
+                </div>
+                <div class="analytics-visuals" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                    <div class="visual-card">
+                        <h3 style="margin-top:0; margin-bottom:15px; font-size: 1.1rem; color: var(--text-primary);">Orders Over Time</h3>
+                        <div style="position: relative; height: 220px; width: 100%;">
+                            <canvas id="ordersChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="visual-card">
+                        <h3 style="margin-top:0; margin-bottom:15px; font-size: 1.1rem; color: var(--text-primary);">Sales By Category</h3>
+                        <div style="position: relative; height: 220px; width: 100%; display: flex; justify-content: center;">
+                            <canvas id="salesCategoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="visual-card" style="margin-bottom: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px;">
+                    <div>
+                        <h3 style="margin-top:0; font-size: 1.1rem; color: var(--text-primary);">Quick Database Stats</h3>
+                        <div style="display:flex; justify-content:space-between; padding: 10px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem; color: var(--text-secondary);">
+                            <span>Total Registered Users</span>
+                            <strong id="quick-users-count" style="color: var(--text-primary);">1</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding: 10px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem; color: var(--text-secondary);">
+                            <span>Products Catalogued</span>
+                            <strong id="quick-catalog-count" style="color: var(--text-primary);">0</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding: 10px 0; font-size:0.9rem; color: var(--text-secondary);">
+                            <span>Simulated Payment Success</span>
+                            <strong style="color:var(--success-color);">90%</strong>
+                        </div>
+                    </div>
+                    <div style="background:var(--bg-hover); padding:15px; border-radius:8px; font-size:0.8rem; color:var(--text-secondary); line-height:1.4; display:flex; align-items:center;">
+                        <div>
+                            <i class="fas fa-lightbulb" style="color:var(--secondary-color); margin-right: 5px;"></i> <strong>Pro Tip:</strong> Simulated OTP verification allows checkout bypass for QA automation. Use code <strong>123456</strong> for instantaneous order confirmation.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 2: Products List Panel -->
+            <section id="panel-products" class="tab-panel">
+                <div class="visual-card" style="padding:0; overflow:hidden;">
+                    <div class="table-responsive">
+                        <table id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 3: Manage Orders Panel -->
+            <section id="panel-orders" class="tab-panel">
+                <div class="visual-card" style="padding:0; overflow:hidden;">
+                    <div class="table-responsive">
+                        <table id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Customer Phone</th>
+                                    <th>Grand Total</th>
+                                    <th>Current Status</th>
+                                    <th>Actions / Dispatch Update</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 4: Reviews Moderation Panel -->
+            <section id="panel-reviews" class="tab-panel">
+                <div id="reviews-moderation-list">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </section>
+
+            <!-- Tab 5: Coupon Codes Panel -->
+            <section id="panel-coupons" class="tab-panel">
+                <div class="coupon-layout">
+                    <!-- Create Coupon Card -->
+                    <div class="visual-card">
+                        <h3>Create New Coupon</h3>
+                        <form id="coupon-form">
+                            <div class="form-group">
+                                <label for="coupon-code">Coupon Code</label>
+                                <input type="text" id="coupon-code" placeholder="e.g. MONSOON30" required style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label for="coupon-type">Discount Type</label>
+                                <select id="coupon-type" required>
+                                    <option value="percent">Percent Discount (%)</option>
+                                    <option value="flat">Flat Discount (₹)</option>
+                                    <option value="freeship">Free Shipping Override</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="coupon-val-group">
+                                <label for="coupon-value">Discount Value</label>
+                                <input type="number" id="coupon-value" min="0" placeholder="e.g. 20" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="coupon-min-cart">Minimum Purchase Value (₹)</label>
+                                <input type="number" id="coupon-min-cart" min="0" value="0" placeholder="e.g. 499">
+                            </div>
+                            <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;"><i class="fas fa-plus"></i> Generate Coupon</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Active Coupons Table -->
+                    <div class="visual-card" style="padding:0; overflow:hidden;">
+                        <div class="table-responsive">
+                            <table id="coupons-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Details</th>
+                                        <th>Rules</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated dynamically by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Product Creation/Modification Modal -->
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">Add / Edit Product</h3>
+            <form id="product-form">
+                <input type="hidden" id="prod-id">
+                <div class="form-group">
+                    <label for="prod-name">Name</label>
+                    <input type="text" id="prod-name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prod-category">Category</label>
+                        <select id="prod-category" required>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prod-stock">Stock</label>
+                        <input type="number" id="prod-stock" required min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prod-price">Original Price (₹)</label>
+                        <input type="number" id="prod-price" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="prod-discount">Discounted Price (₹)</label>
+                        <input type="number" id="prod-discount" min="1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="prod-image">Image URL</label>
+                    <input type="text" id="prod-image" placeholder="https://..." required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JS Files -->
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/data.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/state.js"></script>
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/core/recommendations.js"></script>
+    <script src="../js/core/calculations.js"></script>
+    <script src="../js/core/filters.js"></script>
+    <script src="../js/components/productCard.js"></script>
+    <script src="../js/features/chat.js"></script>
+    <script src="../js/features/theme.js"></script>
+    <script src="../js/features/formValidation.js"></script>
+    <script src="../js/features/admin.js"></script>
+</body>
+</html>

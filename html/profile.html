@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - SriMart</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    
+    <style>
+        /* Account Layout Styles */
+        .account-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            margin-top: 40px;
+            margin-bottom: 60px;
+            align-items: start;
+        }
+        @media (max-width: 992px) {
+            .account-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        .account-sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .user-info-brief {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .account-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .account-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-decoration: none;
+            transition: background var(--transition-fast), color var(--transition-fast);
+        }
+        .account-nav-item:hover, .account-nav-item.active {
+            background: var(--bg-hover);
+            color: var(--primary-color);
+        }
+        
+        .account-main {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: var(--shadow-sm);
+            min-height: 500px;
+        }
+        .account-header {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        /* Form Styles */
+        .profile-form {
+            max-width: 500px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--surface-color);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        /* Order Cards Timeline */
+        .order-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            background: var(--surface-color);
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        /* Timeline Tracker */
+        .order-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+            padding: 0 10px;
+        }
+        .order-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+        .timeline-progress {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            height: 4px;
+            background: var(--primary-color);
+            z-index: 2;
+            transition: width 0.5s ease;
+        }
+        .timeline-step {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+        }
+        .timeline-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: background 0.3s, border-color 0.3s, color 0.3s;
+        }
+        .timeline-step.completed .timeline-icon {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        .timeline-step.active .timeline-icon {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(11,110,79,0.3);
+        }
+        .timeline-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .timeline-step.active .timeline-label, .timeline-step.completed .timeline-label {
+            color: var(--text-primary);
+        }
+        
+        .order-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .order-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Loader -->
+    <div id="global-loader" class="global-loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Sticky Navbar -->
+    <header class="header" id="header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <button class="hamburger-menu" id="hamburger-menu" aria-label="Menu"><i class="fas fa-bars"></i></button>
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-shopping-bag logo-icon"></i>
+                    <span class="logo-text"><b>Sri</b>Mart</span>
+                </a>
+            </div>
+            <div class="search-container">
+                <form class="search-form" id="search-form">
+                    <input type="text" id="search-input" placeholder="Search for products, brands and more" autocomplete="off">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+                <div class="search-suggestions" id="search-suggestions"></div>
+            </div>
+            <nav class="nav-links" id="nav-links">
+                <button class="close-menu" id="close-menu"><i class="fas fa-times"></i></button>
+                
+                <a href="javascript:history.back()" class="nav-item mobile-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </a>
+                
+                <div class="nav-item mega-menu-trigger" id="mega-menu-trigger" tabindex="0">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Categories</span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+                    
+                    <!-- Mega Menu Dropdown -->
+                    <div class="mega-menu" id="mega-menu">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <a href="login.html" class="nav-item active" id="nav-login">
+                    <i class="fas fa-user"></i>
+                    <span>Login</span>
+                </a>
+                
+                <a href="wishlist.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Wishlist</span>
+                </a>
+                
+                <a href="cart.html" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Cart</span>
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </a>
+
+                <div class="theme-switch" id="theme-toggle" aria-label="Toggle Theme"><i class="fas fa-moon theme-switch-icon"></i><i class="fas fa-sun theme-switch-icon"></i></div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container account-container">
+        
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <div class="user-info-brief">
+                <div class="user-avatar" id="user-avatar-initial">U</div>
+                <div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Hello,</div>
+                    <div style="font-weight: 600; font-size: 1.1rem;" class="user-name-display">User</div>
+                </div>
+            </div>
+            <nav class="account-nav" id="account-tabs-nav">
+                <a href="#dashboard" class="account-nav-item active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#orders" class="account-nav-item" data-tab="orders">
+                    <i class="fas fa-box-open"></i> My Orders
+                </a>
+                <a href="#wishlist" class="account-nav-item" data-tab="wishlist">
+                    <i class="fas fa-heart"></i> My Wishlist
+                </a>
+                <a href="#addresses" class="account-nav-item" data-tab="addresses">
+                    <i class="fas fa-map-marker-alt"></i> Manage Addresses
+                </a>
+                <a href="#savedcards" class="account-nav-item" data-tab="savedcards">
+                    <i class="fas fa-credit-card"></i> Saved Cards
+                </a>
+                <a href="#coupons" class="account-nav-item" data-tab="coupons">
+                    <i class="fas fa-ticket-alt"></i> My Coupons
+                </a>
+                <a href="#notifications" class="account-nav-item" data-tab="notifications">
+                    <i class="fas fa-bell"></i> Notifications
+                </a>
+                <a href="#settings" class="account-nav-item" data-tab="settings">
+                    <i class="fas fa-cog"></i> Settings & Bulk Actions
+                </a>
+                <a href="#" class="account-nav-item" id="logout-btn">
+                    <i class="fas fa-power-off"></i> Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Panel Container -->
+        <div class="account-main">
+            <!-- Panel: Dashboard -->
+            <div class="tab-panel active" id="panel-dashboard">
+                <h2 class="account-header">Account Dashboard</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: var(--bg-hover); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
+                        <i class="fas fa-shopping-bag" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 10px;"></i>
+                        <h4 style="margin-bottom: 5px;">Total Orders</h4>
+                        <strong id="dashboard-orders-count" style="font-size: 1.5rem;">0</strong>
+                    </div>
+                    <div style="background: var(--bg-hover); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
+                        <i class="fas fa-heart" style="font-size: 2rem; color: #E91E63; margin-bottom: 10px;"></i>
+                        <h4 style="margin-bottom: 5px;">Wishlist Items</h4>
+                        <strong id="dashboard-wishlist-count" style="font-size: 1.5rem;">0</strong>
+                    </div>
+                    <div style="background: var(--bg-hover); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
+                        <i class="fas fa-wallet" style="font-size: 2rem; color: #4CAF50; margin-bottom: 10px;"></i>
+                        <h4 style="margin-bottom: 5px;">Wallet Balance</h4>
+                        <strong id="dashboard-wallet-balance" style="font-size: 1.5rem;">₹50,000</strong>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 15px; font-weight:600;">Personal Information</h3>
+                <form id="profile-form" class="profile-form">
+                    <div class="form-group">
+                        <label for="profile-name">Full Name</label>
+                        <input type="text" id="profile-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-phone">Phone Number</label>
+                        <input type="tel" id="profile-phone" readonly style="background-color: var(--bg-color); cursor: not-allowed; color: var(--text-secondary);">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Phone number cannot be changed.</div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="theme-accent">Theme Accent Color</label>
+                        <input type="color" id="theme-accent" value="#4CAF50" style="padding: 0; border: none; width: 50px; height: 50px; cursor: pointer;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Pick a color to customize your shopping experience.</div>
+                    </div>
+                    <button type="submit" class="btn-primary" style="padding: 10px 20px; margin-top: 15px;">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Panel: Orders -->
+            <div class="tab-panel hidden" id="panel-orders" style="display: none;">
+                <h2 class="account-header">My Orders</h2>
+                <div id="orders-list-container">
+                    <!-- Injected via orders.js -->
+                </div>
+            </div>
+
+            <!-- Panel: Wishlist -->
+            <div class="tab-panel hidden" id="panel-wishlist" style="display: none;">
+                <h2 class="account-header">My Wishlist</h2>
+                <div id="wishlist-list-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                    <!-- Injected via orders.js -->
+                </div>
+            </div>
+
+            <!-- Panel: Addresses -->
+            <div class="tab-panel hidden" id="panel-addresses" style="display: none;">
+                <h2 class="account-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    Manage Addresses
+                    <button id="add-address-btn" class="btn-secondary" style="font-size: 0.9rem; padding: 6px 12px;"><i class="fas fa-plus"></i> Add New</button>
+                </h2>
+                <div id="address-book-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <!-- Dynamically populated via orders.js -->
+                </div>
+            </div>
+
+            <!-- Panel: Saved Cards -->
+            <div class="tab-panel hidden" id="panel-savedcards" style="display: none;">
+                <h2 class="account-header">Saved Credit & Debit Cards</h2>
+                <div id="saved-cards-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- Injected via orders.js -->
+                </div>
+            </div>
+
+            <!-- Panel: Coupons -->
+            <div class="tab-panel hidden" id="panel-coupons" style="display: none;">
+                <h2 class="account-header">Available Coupons</h2>
+                <div id="coupons-list-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <!-- Injected via orders.js -->
+                </div>
+            </div>
+
+            <!-- Panel: Notifications -->
+            <div class="tab-panel hidden" id="panel-notifications" style="display: none;">
+                <h2 class="account-header">Notifications</h2>
+                <div id="notifications-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-hover); display: flex; align-items: flex-start; gap: 12px;">
+                        <i class="fas fa-bell" style="color: var(--primary-color); font-size: 1.25rem; margin-top: 2px;"></i>
+                        <div>
+                            <strong style="display: block; font-size: 0.95rem; margin-bottom: 3px;">Welcome to SriMart!</strong>
+                            <span style="font-size: 0.85rem; color: var(--text-secondary);">Enjoy your shopping with code WELCOME100 for ₹100 flat off.</span>
+                        </div>
+                    </div>
+                    <div style="padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-hover); display: flex; align-items: flex-start; gap: 12px;">
+                        <i class="fas fa-shipping-fast" style="color: var(--primary-color); font-size: 1.25rem; margin-top: 2px;"></i>
+                        <div>
+                            <strong style="display: block; font-size: 0.95rem; margin-bottom: 3px;">Super Fast Delivery Active</strong>
+                            <span style="font-size: 0.85rem; color: var(--text-secondary);">Get next-day shipping in metro areas on high-stock items!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel: Settings -->
+            <div class="tab-panel hidden" id="panel-settings" style="display: none;">
+                <h2 class="account-header">Settings & Bulk Actions</h2>
+                
+                <!-- Bulk Add to Cart section -->
+                <div style="background: var(--bg-hover); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 15px; font-weight:600;"><i class="fas fa-cart-plus" style="color: var(--primary-color);"></i> Bulk Cart Actions</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">Dynamically populate your cart by adding all products from specific categories for testing.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <button onclick="bulkAddCategoryToCart('Mobiles')" class="btn-primary" style="padding: 12px; border-radius: 8px; cursor: pointer; font-weight:600; border:none;">
+                            Add All Mobiles
+                        </button>
+                        <button onclick="bulkAddCategoryToCart('Grocery')" class="btn-primary" style="padding: 12px; border-radius: 8px; cursor: pointer; font-weight:600; border:none;">
+                            Add All Grocery
+                        </button>
+                        <button onclick="bulkAddCategoryToCart('Electronics')" class="btn-primary" style="padding: 12px; border-radius: 8px; cursor: pointer; font-weight:600; border:none;">
+                            Add All Electronics
+                        </button>
+                        <button onclick="bulkAddCategoryToCart('Fashion')" class="btn-primary" style="padding: 12px; border-radius: 8px; cursor: pointer; font-weight:600; border:none;">
+                            Add All Fashion
+                        </button>
+                    </div>
+                </div>
+
+                <!-- General settings -->
+                <div style="background: var(--bg-hover); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <h3 style="margin-bottom: 15px; font-weight:600;"><i class="fas fa-tools" style="color: var(--primary-color);"></i> General Settings</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">Adjust local settings and state data for testing.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <strong style="display:block; font-size:0.95rem;">Clear Entire Session Cache</strong>
+                                <span style="font-size:0.8rem; color:var(--text-secondary);">Resets shopping cart, wishlist, and active user session data.</span>
+                            </div>
+                            <button onclick="clearSessionCache()" class="btn-secondary" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid var(--error-color); color: var(--error-color); background:transparent;">Reset All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Add Address Modal -->
+        <div id="address-modal" class="modal-overlay hidden" style="position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:flex; justify-content:center; align-items:center;">
+            <div class="modal-content" style="background:var(--bg-card); padding:25px; border-radius:8px; width:90%; max-width:400px; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 15px;">Add New Address</h3>
+                <form id="address-form">
+                    <div class="form-group">
+                        <label>Label (e.g. Home, Work)</label>
+                        <input type="text" id="addr-label" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Address</label>
+                        <textarea id="addr-full" rows="3" required style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode</label>
+                        <input type="text" id="addr-pin" required pattern="[0-9]{6}">
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                        <button type="button" id="close-address-modal" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Address</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <a href="../index.html" class="logo" style="margin-bottom: 20px; display: inline-block; text-decoration:none;">
+                    <i class="fas fa-shopping-bag logo-icon" style="color:var(--secondary-color);"></i>
+                    <span class="logo-text" style="color:var(--text-light);"><b>Sri</b>Mart</span>
+                </a>
+                <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">
+                    Your one-stop destination for everything you need. Shop smart, shop SriMart.
+                </p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="store-locator.html">Store Locator</a></li>
+                    <li><a href="profile.html#orders">Track Order</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="refund.html">Returns & Refund</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col newsletter-col">
+                <h3>Stay in the Loop</h3>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px;">Subscribe to our newsletter to get updates on our latest offers!</p>
+                <form class="newsletter-form" id="newsletter-form" style="display:flex; gap:5px;">
+                    <input type="email" id="newsletter-email" placeholder="Enter your email" required style="padding:10px; flex:1; border:none; border-radius:4px; font-family: inherit;">
+                    <button type="submit" class="btn-primary" style="padding: 10px 15px; border-radius:4px; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+                </form>
+                <div class="payment-methods" style="margin-top: 20px;">
+                    <p style="font-size: 0.85rem; margin-bottom: 5px; color:var(--text-light);">100% Secure Payments</p>
+                    <i class="fab fa-cc-visa" style="font-size: 1.5rem; margin-right: 5px; color:#fff;"></i>
+                    <i class="fab fa-cc-mastercard" style="font-size: 1.5rem; margin-right: 5px; color:#fff;"></i>
+                    <i class="fab fa-cc-paypal" style="font-size: 1.5rem; margin-right: 5px; color:#fff;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; margin-top:30px; text-align:center;">
+            <p>&copy; 2026 SriMart. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Fixed Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav mobile-only" id="mobile-bottom-navbar" aria-label="Mobile Bottom Navigation">
+        <a href="../index.html" class="mobile-bottom-item" id="btn-bottom-home">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-home"></i>
+            </div>
+            <span>Home</span>
+        </a>
+        <a href="categories.html" class="mobile-bottom-item" id="btn-bottom-categories">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-th-large"></i>
+            </div>
+            <span>Categories</span>
+        </a>
+        <a href="profile.html" class="mobile-bottom-item active" id="btn-bottom-profile">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-user"></i>
+            </div>
+            <span>Account</span>
+        </a>
+        <a href="cart.html" class="mobile-bottom-item" id="btn-bottom-cart">
+            <div class="bottom-icon-wrap">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="bottom-badge" id="bottom-cart-badge" style="display: none;">0</span>
+            </div>
+            <span>Cart</span>
+        </a>
+    </nav>
+
+    <!-- JS Files -->
+    <script src="../js/data.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/state.js"></script>
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/core/recommendations.js"></script>
+    <script src="../js/core/calculations.js"></script>
+    <script src="../js/core/filters.js"></script>
+    <script src="../js/components/productCard.js"></script>
+    <script src="../js/features/chat.js"></script>
+    <script src="../js/features/theme.js"></script>
+    <script src="../js/features/navbar.js"></script>
+    <script src="../js/features/formValidation.js"></script>
+    <script src="../js/features/auth.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="../js/features/profile.js"></script>
+</body>
+</html>

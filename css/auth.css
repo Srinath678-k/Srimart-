@@ -1,0 +1,272 @@
+/* ==========================================================================
+   SriMart Authentication Styles (Login/Register)
+   ========================================================================== */
+
+.auth-container {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.auth-card {
+    background-color: var(--surface-color);
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+/* Left Side - Banner */
+.auth-banner {
+    flex: 1;
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-banner h2 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+    position: relative;
+    z-index: 2;
+}
+
+.auth-banner p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+}
+
+.auth-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+/* Right Side - Form */
+.auth-form-wrapper {
+    flex: 1;
+    padding: 40px;
+}
+
+.auth-form-wrapper h3 {
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(11, 110, 79, 0.1);
+}
+
+[data-theme="dark"] .form-group input:focus {
+    box-shadow: 0 0 0 2px rgba(18, 157, 114, 0.2);
+}
+
+.form-group .toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 40px;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.form-group.error input {
+    border-color: var(--error-color);
+}
+
+.form-group.error .error-message {
+    display: block;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.auth-submit-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    background-color: var(--secondary-color);
+    color: #000;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.auth-submit-btn:hover {
+    background-color: var(--secondary-hover);
+}
+
+.auth-link {
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.auth-link a {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Toast Notification */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border-radius: 4px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideUpFade 0.3s ease forwards;
+    border-left: 4px solid var(--primary-color);
+}
+
+.toast.error {
+    border-left-color: var(--error-color);
+}
+.toast.success {
+    border-left-color: var(--success-color);
+}
+
+.toast-cart-btn {
+    background-color: var(--secondary-color);
+    color: #000 !important;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 10px;
+    display: inline-block;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.toast-cart-btn:hover {
+    background-color: var(--secondary-hover);
+    transform: translateY(-1px);
+}
+
+.toast-cart-btn:active {
+    transform: translateY(0);
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 16px 12px 40px 12px;
+        min-height: calc(100vh - 180px);
+    }
+    .auth-card {
+        flex-direction: column;
+        border-radius: 12px;
+    }
+    .auth-banner {
+        padding: 24px 16px;
+        text-align: center;
+    }
+    .auth-banner h2 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+    }
+    .auth-banner p {
+        font-size: 0.92rem;
+    }
+    .auth-form-wrapper {
+        padding: 24px 16px;
+    }
+    .auth-form-wrapper h3 {
+        font-size: 1.25rem;
+        margin-bottom: 16px;
+    }
+    .toast-container {
+        bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+        width: calc(100% - 32px);
+        max-width: 380px;
+    }
+    .toast {
+        padding: 10px 16px;
+        font-size: 0.88rem;
+    }
+}
+
